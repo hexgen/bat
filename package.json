@@ -1,7 +1,7 @@
 {
   "name": "bat",
-  "version": "0.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "Dark knight",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,5 +11,8 @@
     "url": "http://stash.cronagency.com/scm/bat/bat.git"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "babyparse": "^0.4.1"
+  }
 }
