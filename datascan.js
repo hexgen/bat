@@ -82,6 +82,7 @@ function insertDocuments(db, name, data, callback)
         function (err, result)
         {
             assert.equal(err, null);
+            console.log(name + ' finished');
             if (callback !== undefined) {
                 callback();
             }
