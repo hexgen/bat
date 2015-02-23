@@ -4,16 +4,18 @@ var assert = require('assert');
 var Baby = require('babyparse');
 
 var MongoClient = require('mongodb').MongoClient;
-var DBurl = 'mongodb://192.168.10.170:27017/bat1';
+var DBurl = 'mongodb://192.168.10.170:27017/bat2';
 
 var CSVConfig = {header: true};
 var dataPath = __dirname;
 
-function scanFiles(dataDir, callback) {
+function scanFiles(dataDir, callback)
+{
     console.log('Scanning ... ' + dataDir);
     fs.readdir(
         dataDir,
-        function (err, files) {
+        function (err, files)
+        {
             assert.equal(err, null);
             if (callback !== undefined) {
                 callback(files);
@@ -22,24 +24,29 @@ function scanFiles(dataDir, callback) {
     );
 }
 
-function parseCsvFiles(files, db) {
+function parseCsvFiles(files, db)
+{
     console.log('Got ', files);
     files
-        .filter(function (file) {
+        .filter(function (file)
+        {
             return fs.statSync(path.join(dataPath, file)).isFile()
                 && file.match(/\.csv$/);
         })
-        .forEach(function (file) {
+        .forEach(function (file)
+        {
             parseCsvFile(file, db);
         });
 }
 
-function readCSVFile(file, callback) {
+function readCSVFile(file, callback)
+{
     console.log('Parsing file: ' + file);
     fs.readFile(
         path.join(dataPath, file),
         {encoding: 'utf-8'},
-        function (err, stream) {
+        function (err, stream)
+        {
             assert.equal(err, null);
             if (callback !== undefined) {
                 return callback(stream);
@@ -49,17 +56,32 @@ function readCSVFile(file, callback) {
     );
 }
 
-function parseCSVStream(stream, callback) {
+function parseCSVStream(stream, callback)
+{
     console.log('Processing CSV Stream');
     var parsed = Baby.parse(stream, CSVConfig);
+    var data = parsed.data.filter(function (item)
+    {
+        if (Object.keys(item).length > 1) {
+            return true;
+        }
+        if (Object.keys(item).length < 1) {
+            return false;
+        }
+        if (item[Object.keys(item)[0]].trim().length) {
+            return false;
+        }
+//        console.log(item, Object.keys(item).length);
+    });
     if (callback !== undefined) {
-        return callback(parsed.data);
+        return callback(data);
     }
 
-    return parsed.data;
+    return data;
 }
 
-function insertDocuments(db, name, data, callback) {
+function insertDocuments(db, name, data, callback)
+{
     console.log(name + ' [' + data.length + ']');
     var collection = db.collection(name);
     collection.drop();
@@ -68,7 +90,8 @@ function insertDocuments(db, name, data, callback) {
 
     collection.insert(
         data,
-        function (err, result) {
+        function (err, result)
+        {
             assert.equal(err, null);
             console.log(name + ' finished');
             if (callback !== undefined) {
@@ -77,7 +100,8 @@ function insertDocuments(db, name, data, callback) {
         });
 }
 
-function importFile(fileName) {
+function importFile(fileName)
+{
     var shortName = fileName.split(path.sep).pop();
 
     assert.equal(
@@ -91,21 +115,26 @@ function importFile(fileName) {
 
     readCSVFile(
         fileName,
-        function (stream) {
-            return parseCSVStream(stream, function (data) {
+        function (stream)
+        {
+            return parseCSVStream(stream, function (data)
+            {
                 console.log('Documents: ' + data.length);
                 MongoClient.connect(
                     DBurl,
-                    function (err, db) {
+                    function (err, db)
+                    {
                         assert.equal(null, err);
                         console.log("Connected to the MongoDB ");
                         insertDocuments(
                             db,
                             name,
                             data,
-                            function (result) {
+                            function (result)
+                            {
                                 db.close();
-                                console.log(result.length + ' documents successfully inserted');
+                                console.log(result.length
+                                + ' documents successfully inserted');
                                 console.log('db closed ');
                             }
                         );
@@ -120,17 +149,21 @@ function importFile(fileName) {
 }
 
 if (process.argv.indexOf('--list') >= 0) {
-    scanFiles(path.join(dataPath, 'data'), function (files) {
+    scanFiles(path.join(dataPath, 'data'), function (files)
+    {
         console.log(files)
     });
     return;
 }
 
 if (process.argv.indexOf('--all') >= 0) {
-    scanFiles(path.join(dataPath, 'data'), function (files) {
-        files.filter(function (file) {
+    scanFiles(path.join(dataPath, 'data'), function (files)
+    {
+        files.filter(function (file)
+        {
             return file.match(/\.csv$/);
-        }).forEach(function (file) {
+        }).forEach(function (file)
+        {
             importFile(path.join('data', file));
         });
         console.log(files)
