@@ -15,15 +15,20 @@ var dataPath = __dirname;
 var Hash = require('hashish');
 var Seq = require('seq');
 
+var db = null;
+
 Seq()
-    .seq('db', function ()
+    .seq(function ()
     {
         MongoClient.connect(
             DBurl,
-            this
+            function(err, _db)
+            {
+                db = _db;
+            }
         );
     })
-    .seq('db',function(){
+    .seq(function(){
         console.log(this.stack);
     })
     .seq('files', function ()
