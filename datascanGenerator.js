@@ -95,13 +95,14 @@ function *generator() {
 
 function main() {
     var v = generator();
-    //while(!(v = generator.next()).done) {
-    //    console.log('generated value', v.value);
-    //}
-    result = v.next().value;
-    result = v.next(result).value;
-    result = v.next(result).value;
-    v.next(result).value;
+    var genResult = null;
+    var genValue = null;
+    var genDone = false;
+    while(!genDone) {
+        genResult = v.next(genValue);
+        genValue = genResult.value;
+        genDone = genResult.done;
+    }
 }
 
 main();
