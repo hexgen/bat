@@ -54,12 +54,13 @@ var findDocuments = function (db, collectionName, callback) {
 //}
 
 var findType = function (db, id, callback) {
-    console.log("findType", {"zoho_id": id});
+    //console.log("findType", {"zoho_id": id});
 
     var collection = db.collection('AllId');
     collection.findOne({zoho_id: id}, function (err, item) {
         assert.equal(err, null);
-        callback(item.type);
+        //console.log("Item Type", item.type);
+        callback(err, item.type);
     });
 
 }
@@ -107,11 +108,18 @@ run(function* () {
         //}
         //result
 
-        for(var doc in documents){
-            var result  = findTypeSync(db, doc._id_export);
+        //console.log("Document 0",documents[1]);
+        //var result1  = yield findTypeSync(db, documents[1]._id_export);
+        //console.log("Result1", result1);
+        var result = [];
+        for(var doc of documents){
+            if(doc._id_export){
+                console.log(doc._id_export);
+                result[doc._id_export]  = yield findTypeSync(db, doc._id_export);
+            }
         }
-        yield result;
-        //console.log(documents);
+        //yield result;
+        console.log(result);
         db.close();
         //console.log(file);
     }
