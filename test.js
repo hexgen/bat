@@ -40,90 +40,60 @@ var findDocuments = function (db, collectionName, callback) {
     });
 }
 
-//var findType = function (id, callback) {
-//    console.log("findType", {"zoho_id": id});
-//    MongoClient.connect(url, function (err, db) {
-//        assert.equal(err, null);
-//        var collection = db.collection('AllId');
-//        collection.findOne({zoho_id: id}, function (err, item) {
-//            assert.equal(err, null);
-//            db.close()
-//            callback(item.type);
-//        });
-//    });
-//}
-
 var findType = function (db, id, callback) {
-    //console.log("findType", {"zoho_id": id});
-
     var collection = db.collection('AllId');
     collection.findOne({zoho_id: id}, function (err, item) {
         assert.equal(err, null);
-        //console.log("Item Type", item.type);
-        callback(err, item.type);
+        var result = null;
+        if (item != null) {
+            result = item.type;
+        }
+        callback(err, result);
     });
-
 }
 
-var findTypeAndSave = function (db, documents, callback) {
-    console.log("findTypeAndSave started");
-
-    var collection = db.collection('AllId');
-    //try {
-        for (var doc of documents) {
-            collection.findOne({zoho_id: doc._id_export}, function (err, item) {
-                assert.equal(err, null);
-                //var newCollection = db.collection(item.type);
-                console.log(item.type);
-                //callback(err, item.type);
-            });
-        }
-    //}
-    //catch (er) {
-    //    console.error(er)
-        //while(!genDone) {
-        //    genResult = v.next(genValue);
-        //    genValue = genResult.value;
-        //    genDone = genResult.done;
-        //}
-    //}
-    var er = Error;
-    callback(er, 'Success');
+var saveNote = function (db, table, item, callback) {
+    var collection = db.collection(table);
+    collection.insert(item, function (err, doc) {
+        assert.equal(err, null);
+        callback(err, doc);
+    });
 }
 
 var findTypeSync = thunkify(findType);
-var findTypeAndSaveSync = thunkify(findTypeAndSave);
-
+var saveNoteSync = thunkify(saveNote);
 var findDocumentsSync = thunkify(findDocuments);
-
 
 run(function* () {
     try {
         var db = yield dbConnect(url);
-        //var file = yield readFile('./LeadsPart.csv', {encoding: 'utf-8'});
-        var documents = yield findDocumentsSync(db, 'User');
-        //for (var doc of documents) {
-        //    var type = yield findTypeSync(db, doc._id_export);
-        //    console.log(type);
-        //}
-        //result
-
-        //console.log("Document 0",documents[1]);
-        //var result1  = yield findTypeSync(db, documents[1]._id_export);
-        //console.log("Result1", result1);
-        var result = [];
-        for(var doc of documents){
-            if(doc._id_export){
-                console.log(doc._id_export);
-                result[doc._id_export]  = yield findTypeSync(db, doc._id_export);
+        var documents = yield findDocumentsSync(db, 'Note');
+        var i = 0;
+        var notes = [];
+        notes['NoteLead'] = [];
+        notes['NotePatient'] = [];
+        for (var doc of documents) {
+            //if (i >= 3) break
+            if (doc.target) {
+                console.log(++i + "/" + documents.length, "id = " + doc.target);
+                var type = yield findTypeSync(db, doc.target);
+                if (type != null) {
+                    console.log('Note' + type);
+                    notes['Note' + type].push(doc);
+                }
             }
         }
-        //yield result;
-        console.log(result);
+        for (var tableName in notes) {
+            if (notes[tableName].length>0) {
+                var res = yield saveNoteSync(db, tableName, notes[tableName]);
+            }
+            if (res != null) {
+                console.log(tableName + 'are saved');
+            }
+        }
         db.close();
-        //console.log(file);
     }
     catch (er) {
-        console.error(er)
+        console.error(er);
     }
 })
