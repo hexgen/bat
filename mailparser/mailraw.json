@@ -1,0 +1,31 @@
+[
+  {
+    "_acl": [],
+    "protocol_ids": {
+      "54f4231c219961f80800002b": "[Gmail]/&BBIEQQRP- &BD8EPgRHBEIEMA-497"
+    },
+    "message_id": "<54f448d4.0714980a.1454.41cf@mx.google.com>",
+    "raw_headers": "Return-Path: <taxist0@gmail.com>\r\nReceived: from Wepo ([178.215.174.212]) by mx.google.com with ESMTPSA\r\n idj7sm855031lae.9.2015.03.02.03.26.11 for <taxist@i.ua>\r\n (version=TLSv1.2cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128); Mon, 02 Mar\r\n 2015 03:26:12-0800 (PST)\r\nMessage-ID: <54f448d4.0714980a.1454.41cf@mx.google.com>\r\nX-Google-Original-Message-ID: 54f448cdb54d5\r\nDate: Mon, 02 Mar 2015 12:26:05 +0100\r\nMIME-Version: 1.0\r\nContent-Type: text/html;\r\n charset=\"ISO-8859-1\"\r\nContent-Transfer-Encoding: 8bit\r\nFrom: taxist0@gmail.com\r\nTo: taxist@i.ua\r\nSubject: 54\r\nSender: \r\n",
+    "raw_content": "\r\n",
+    "is_converted": 0,
+    "converted_mail": {
+      "text": "<!DOCTYPE html><html><head><meta http-equiv='content-type' content='Content-Type: text/html; charset=\"ISO-8859-1\"'><link href='/css/themes/view/mail.css' media='screen' rel='stylesheet' type='text/css'><link href='/css/themes/view/font.css' media='screen' rel='stylesheet' type='text/css'></head><body></body></html>",
+      "header": {
+        "return-path": "<taxist0@gmail.com>",
+        "message-id": "<54f448d4.0714980a.1454.41cf@mx.google.com>",
+        "date": "Mon, 02 Mar 2015 12:26:05 +0100",
+        "from": [
+          "taxist0@gmail.com"
+        ],
+        "to": [
+          "taxist@i.ua"
+        ],
+        "subject": "54",
+        "sender": ""
+      },
+      "link": []
+    },
+    "error": []
+  }
+
+]
